@@ -61,7 +61,7 @@ public class Participante {
     private boolean detectarFigurita(Figurita figu) {
 
         for (int i = 0; i < _figuritasAdquiridas.size(); i++) {
-
+        	
             if (_figuritasAdquiridas.get(i).equals(figu)) {
                 return true;
             }
@@ -186,7 +186,6 @@ public class Participante {
 
         for (Figurita figurita : _figuritasAdquiridas) {
             
-    
             if (figurita.equals(fig)) {
                 return true;
             }
@@ -220,11 +219,6 @@ public class Participante {
         return _album.canjeo_Premio_Album;
     }
 
-//    void setPremio() { // El participante gana el premio
-//
-//        _premioRecibido = true;
-//
-//    }
 
     public String get_tipoAlbum() {
         return _tipoAlbum;

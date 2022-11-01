@@ -21,9 +21,12 @@ public class AlbumDelMundial implements IAlbumDelMundial {
 
 	// --------------------------------- Metodos Principales
 	// ----------------------------------------------
+	
+	//METODO IMPLEMENTADO
 	@Override
 	public int registrarParticipante(int dni, String nombre, String tipoAlbum) {
 
+		//si esta registrado lanza excepcion sino...
 		if (estaRegistrado(dni)) {
 			throw new RuntimeException("El participante ya esta registrado");
 		}
@@ -43,6 +46,7 @@ public class AlbumDelMundial implements IAlbumDelMundial {
 
 	}
 
+	//METODO IMPLEMENTADO
 	@Override
 	public void comprarFiguritas(int dni) {
 
@@ -55,6 +59,7 @@ public class AlbumDelMundial implements IAlbumDelMundial {
 
 	}
 
+	//METODO IMPLEMENTADO
 	@Override
 	public void comprarFiguritasTop10(int dni) {
 
@@ -68,6 +73,9 @@ public class AlbumDelMundial implements IAlbumDelMundial {
 
 	}
 
+		
+	
+	//METODO IMPLEMENTADO
 	@Override
 	public void comprarFiguritasConCodigoPromocional(int dni) {
 		Participante p = DetectarParticipante(dni);
@@ -79,7 +87,8 @@ public class AlbumDelMundial implements IAlbumDelMundial {
 
 		}
 	}
-
+	
+	//METODO IMPLEMENTADO
 	@Override
 	public List<String> pegarFiguritas(int dni) {
 
@@ -102,7 +111,9 @@ public class AlbumDelMundial implements IAlbumDelMundial {
 
 		return lista;
 	}
-
+	
+	
+	//
 	// Devuelve true si el participante lleno el album
 	@Override
 	public boolean llenoAlbum(int dni) {
@@ -116,6 +127,7 @@ public class AlbumDelMundial implements IAlbumDelMundial {
 		return p.getAlbum().getAlbumCompleto();
 	}
 
+	//METODO IMPLEMENTADO
 	@Override
 	public String aplicarSorteoInstantaneo(int dni) {
 		Participante p = DetectarParticipante(dni);
@@ -127,6 +139,7 @@ public class AlbumDelMundial implements IAlbumDelMundial {
 		return albumTradicional.aplicarSorteoInstantaneo();
 	}
 
+	//METODO IMPLEMENTADO
 	@Override
 	public int buscarFiguritaRepetida(int dni) {
 		if (!estaRegistrado(dni)) {
@@ -139,70 +152,11 @@ public class AlbumDelMundial implements IAlbumDelMundial {
 
 	}
 
-	@Override
-	public boolean intercambiar(int dni, int codFigurita) {
 
-		if (!estaRegistrado(dni)) {
-			throw new RuntimeException("Participante no encontrado");
-		}
 
-		Participante p = DetectarParticipante(dni);
-		Figurita Figurita_Cambio = p.obtenerFiguritaID(codFigurita);
-
-		boolean ret = false;
-		Iterator<Participante> it = participantes.iterator();
-
-		while (it.hasNext()) {
-
-			Participante other = it.next();
-
-			// Tienen el mismo tipo de album
-			if (other.get_tipoAlbum().equals(p.get_tipoAlbum())) {
-
-				// Vamos a ver las figus repetidas de other
-				for (int i = 0; i < other.get_figuritasRepetidas().size(); i++) {
-
-					Figurita other_Figurita = other.get_figuritasRepetidas().get(i);
-					// Comparamos valor base de figurita de other con la de p
-					if (other_Figurita.getValor_base() <= Figurita_Cambio.getValor_base()
-							&& !other_Figurita.equals(Figurita_Cambio)) {
-
-						// Detectamos si p tiene la figurita other de menor valor en su stack
-						ret = TieneFigurita(dni, other_Figurita);
-
-						// System.out.println("Tiene Figurita: " + ret + other_Figurita.getCodigo_ID());
-						// ret = false = no la tiene por lo que hago intercambio
-						if (!ret) {
-
-							System.out.println(
-									"Figurita Intercambiada ID: " + other.get_figuritasRepetidas().get(i).getCodigo_ID()
-											+ "\n" + "Figurita Intercambiada Pais: "
-											+ other.get_figuritasRepetidas().get(i).get_pais());
-
-							// Intercambiamos las figuritas de los participantes
-							p.AgregarFiguritaIndividual(other.get_figuritasRepetidas().get(i));
-							other.AgregarFiguritaIndividual(p.obtenerFiguritaID(codFigurita));
-							// Eliminamos las intercambiadas
-							p.borrarFiguritaID(codFigurita);
-							other.borrarFiguritaID(other.get_figuritasRepetidas().get(i).getCodigo_ID());
-
-							return true;
-						}
-
-					}
-
-				}
-
-			}
-
-		}
-
-		return false;
-	}
-
+	//METODO IMPLEMENTADO
 	@Override
 	public boolean intercambiarUnaFiguritaRepetida(int dni) {
-
 		if (!estaRegistrado(dni)) {
 			throw new RuntimeException("Participante no encontrado");
 		}
@@ -214,16 +168,17 @@ public class AlbumDelMundial implements IAlbumDelMundial {
 		boolean ret = false;
 
 		if (p.get_figuritasRepetidas().size() > 0) { // si tiene repetidas...
-
-			figurita_Cambio = p.get_figuritasRepetidas().get(0);
-		} else {//p no tiene repetidas
+			figurita_Cambio = p.get_figuritasRepetidas().get(0); //agarramos la primera figurita
 			
-return false;		}
+		} else {
+			System.out.println("entro a if false");
+				return false;		
+		}
 
 		// Recorremos la lista de participantes
 		// Por IREP no nos importa el tipo de album en este caso
 		while (it.hasNext()) {
-
+			//System.out.println("entro al while");
 			Participante other = it.next();
 
 			// Veamos las figuritas repetidas de este participante
@@ -231,76 +186,73 @@ return false;		}
 
 				// deteccion de valor base y que no sean la misma
 				if (figurita.valor_base <= figurita_Cambio.valor_base && !figurita.equals(figurita_Cambio)) {
-
 					// Detectamos si p tiene la figurita other de menor valor en su stack
 					ret = TieneFigurita(dni, figurita);
 
-					if (!ret) {
+					if (ret) {
 
 						// Intercambiamos las figuritas de los participantes
 						p.AgregarFiguritaIndividual(figurita);
 						other.AgregarFiguritaIndividual(figurita_Cambio);
-
-//						System.out.println("Figurita Repetida pais: " + figurita_Cambio.get_pais() + "\n"
-//								+ "Figurita Repetida codigo ID: " + figurita_Cambio.getCodigo_ID() + "\n"
-//								+ "Figurita Intercambiada ID: " + figurita.getCodigo_ID() + "\n"
-//								+ "Figurita Intercambiada pais: " + figurita.get_pais());
-
-						// Eliminamos las intercambiadas
+						
+						//borramos de p y other la figurita que cambiamos
 						p.borrarFiguritaID(figurita_Cambio.getCodigo_ID());
 						other.borrarFiguritaID(figurita.getCodigo_ID());
-
+						System.out.println("llego adentro");
 						return true;
 
 					}
 
 				}
-
 			}
-
 		}
-
+		System.out.println("llego afuera");
 		return false;
+		
 	}
 
+	//METODO IMPLEMENTADO
 	@Override
 	public String darNombre(int dni) {
 
 		if (!estaRegistrado(dni)) {
 			throw new RuntimeException("Participante invalido");
 		}
-
+		//devuelve el nombre del participante si esta registrado
 		return DetectarParticipante(dni).getNombre();
 
 	}
 
+	//METODO IMPLEMENTADO
 	@Override
 	public String darPremio(int dni) {
 
 		if (!estaRegistrado(dni)) {
 			throw new RuntimeException("El participante no esta registrado");
 		}
-		Participante p = this.DetectarParticipante(dni);
+		
+		Participante participante = this.DetectarParticipante(dni);
 		StringBuilder st = new StringBuilder();
 
-		if (p != null && p.getAlbum().getAlbumCompleto() && p.premioRecibido() 
-			|| p != null && !p.getAlbum().getAlbumCompleto() && !p.premioRecibido() ) {
+		if (participante != null && participante.getAlbum().getAlbumCompleto() && participante.premioRecibido() 
+			|| participante != null && !participante.getAlbum().getAlbumCompleto() && !participante.premioRecibido() ) {
 			throw new RuntimeException("El participante no puede recibir el premio");
 
 		}else {
-			p.reclamarPremio();
-			st.append(p.getAlbum().getPremio()).append(" : \n");
+			participante.reclamarPremio();
+			st.append(participante.getAlbum().getPremio()).append(" : \n");
 
 			// "- ($dni) $nombre: $premio"
-			st.append("- ($" + p.getDni() + ") ");
-			st.append("$nombre: " + p.getNombre());
-			st.append(" $premio: " + p.getAlbum().getPremio());
+			st.append("- ($" + participante.getDni() + ") ");
+			st.append("$nombre: " + participante.getNombre());
+			st.append(" $premio: " + participante.getAlbum().getPremio());
 		}
 		return st.toString();
-
+  
 //       
 	}
-
+	
+	//METODO IMPLEMENTADO
 	@Override
 	public String listadoDeGanadores() {
 
@@ -354,11 +306,11 @@ return false;		}
 	private Integer Detectar_Codigo_Unico(Integer dni) {
 
 		Iterator<Participante> st = participantes.iterator();
-
+		//mientras que haya otro participante..
 		while (st.hasNext()) {
-
+			//crea el participante..
 			Participante p = (Participante) st.next();
-
+			//verifica si el dni coincide con un dni ya registrado
 			if (p.getDni().compareTo(dni) == 0) {
 
 				return p.get_Codigo_Unico_Album();
@@ -498,6 +450,12 @@ return false;		}
 		}
 
 		return p.getAlbum().paises.get(pais).toString();
+	}
+
+	@Override
+	public boolean intercambiar(int dni, int codFigurita) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -33,6 +33,7 @@ public class AlbumDelMundialTest {
 		sistema.registrarParticipante(4444, "Pancho", TIPO_TRADICIONAL);
 		
 		sistema.comprarFiguritas(1111);
+		
 		sistema.comprarFiguritas(4444);
 		
 	}
