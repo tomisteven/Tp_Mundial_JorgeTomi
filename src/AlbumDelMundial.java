@@ -152,6 +152,63 @@ public class AlbumDelMundial implements IAlbumDelMundial {
 
 	}
 
+	//METODO IMPLEMENTADO
+	@Override
+	public boolean intercambiar(int dni, int codFigurita) {
+
+		//particupante
+		Participante participantePrincipal = DetectarParticipante(dni);
+		//LA FIGURITA QUE SE VA A CAMBIAR
+		Figurita Figurita_Cambio = participantePrincipal.obtenerFiguritaID(codFigurita);
+
+		boolean ret = false;
+		Iterator<Participante> it = participantes.iterator();
+
+		while (it.hasNext()) {
+
+			Participante participanteACambiar = it.next();
+
+			// si Tienen el mismo tipo de album
+			if (participanteACambiar.get_tipoAlbum().equals(participantePrincipal.get_tipoAlbum())) {
+
+				// Vamos a ver las figus repetidas de other
+				for (int i = 0; i < participanteACambiar.get_figuritasRepetidas().size(); i++) {
+
+					Figurita figuritaDeParticipanteACambiar = participanteACambiar.get_figuritasRepetidas().get(i);
+					// Comparamos valor base de figurita de other con la de p
+					if (figuritaDeParticipanteACambiar.getValor_base() <= Figurita_Cambio.getValor_base()
+							&& !figuritaDeParticipanteACambiar.equals(Figurita_Cambio)) {
+
+						// Detectamos si p tiene la figurita other de menor valor en su stack
+						ret = TieneFigurita(dni, figuritaDeParticipanteACambiar);
+
+						if (!ret) {
+
+							System.out.println(
+									"Figurita Intercambiada ID: " + participanteACambiar.get_figuritasRepetidas().get(i).getCodigo_ID()
+											+ "\n" + "Figurita Intercambiada Pais: "
+											+ participanteACambiar.get_figuritasRepetidas().get(i).get_pais());
+
+							// Intercambiamos las figuritas de los participantes
+							participantePrincipal.AgregarFiguritaIndividual(participanteACambiar.get_figuritasRepetidas().get(i));
+							participanteACambiar.AgregarFiguritaIndividual(participantePrincipal.obtenerFiguritaID(codFigurita));
+							// Eliminamos las intercambiadas
+							participantePrincipal.borrarFiguritaID(codFigurita);
+							participanteACambiar.borrarFiguritaID(participanteACambiar.get_figuritasRepetidas().get(i).getCodigo_ID());
+
+							return true;
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return false;
+	}
 
 
 	//METODO IMPLEMENTADO
@@ -167,7 +224,7 @@ public class AlbumDelMundial implements IAlbumDelMundial {
 		Figurita figurita_Cambio;
 		boolean ret = false;
 
-		if (p.get_figuritasRepetidas().size() > 0) { // si tiene repetidas...
+		if (p.get_figuritasRepetidas().size() != 0) { // si tiene repetidas...
 			figurita_Cambio = p.get_figuritasRepetidas().get(0); //agarramos la primera figurita
 			
 		} else {
@@ -452,10 +509,6 @@ public class AlbumDelMundial implements IAlbumDelMundial {
 		return p.getAlbum().paises.get(pais).toString();
 	}
 
-	@Override
-	public boolean intercambiar(int dni, int codFigurita) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
 
 }
