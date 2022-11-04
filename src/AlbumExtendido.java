@@ -3,47 +3,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.print.attribute.standard.Copies;
-
 public class AlbumExtendido extends AlbumTradicional {
 
   private HashMap<String, Seccion> paisesMundialistas;
-
-  // ----------------------------------------------- Constructors
-  // ---------------------------------------------------------
-
-
+  private Fabrica fb;
+  // -------------- Constructor --------------------
   public AlbumExtendido() {
 
     super("Extendido");
     super.setPremio("Pelota y Viaje");
-
-    paisesMundialistas = new HashMap<>();
-    establecerPaisesMundialistas();
-
-  }
-
-  private void establecerPaisesMundialistas() {
-
-    Fabrica fb = new Fabrica();
-
-    String[] paisesMundiales = fb.getListadoDeMundialesTop10();
-
-    // Hay 10 paises mundialistas
-
-    for (int i = 0; i < 10; i++) {
-
-      String pais = paisesMundiales[i].substring(0, paisesMundiales[i].length() - 4);
-      if (!pais.equals("Corea del Sur y Japón")) {
-        paisesMundialistas.put(pais,
-            new Seccion(pais, i));
-      } else {
-        paisesMundialistas.put("Japón",
-            new Seccion("Japón", i));
-      }
-
+    fb = new Fabrica();
+    paisesMundialistas = new HashMap<String, Seccion>();
+    String[] paises_sedes = fb.getListadoDeMundialesTop10();
+    for (int i = 0; i < 10; i++) { // Hay 10 paises mundialistas
+        paisesMundialistas.put(paises_sedes[i], new Seccion(paises_sedes[i], i));
     }
-
   }
 
   @Override
@@ -126,9 +100,7 @@ public class AlbumExtendido extends AlbumTradicional {
       }
 
     }
-
     return re;
-
   }
 
   @Override
@@ -136,41 +108,20 @@ public class AlbumExtendido extends AlbumTradicional {
 
     StringBuilder st = new StringBuilder();
 
-    String[] paises = generarListadoDeMundiales();
+    String[] paises = fb.getListadoDeMundialesTop10();
     st.append(super.secciones_Completas());
     st.append("\n");
-    for (String pais : paises) {
-
-      
+    for (String pais : paises) { 
       if (paisesMundialistas.get(pais) != null) {
-
         boolean completa = paisesMundialistas.get(pais).get_Seccion_Completa();
-        int size = paisesMundialistas.get(pais).getFigusPegadas().size();
-       
+        int size = paisesMundialistas.get(pais).getFigusPegadas().size();   
         st.append("$T" + pais + ":" + completa + " $" + size + "\n");
-
       }
-
     }
-
     return st.toString();
-
   }
 
-  
   public HashMap<String, Seccion> getPaisesMundialistas() {
     return paisesMundialistas;
   }
-
-  
-  
-
-
-  private String[] generarListadoDeMundiales() {
-    return new String[] {
-        "España", "México", "Italia", "Estados Unidos",
-        "Francia", "Japón", "Alemania",
-        "Sudáfrica", "Brasil", "Rusia" };
-  }
-
 }

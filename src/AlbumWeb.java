@@ -1,42 +1,22 @@
 public class AlbumWeb extends Album {
     
-    private Integer _codigoPromocional;
-    private boolean canjeoCodigoPromocional;
-
+    private boolean _codigoPromoDisponible;
    
-     //----------------------------------------------- Constructors --------------------------------------------------------- 
+     //------------------- Constructor --------------------------- 
 
-    AlbumWeb(){
-
+    AlbumWeb() {
         super("Web");
         super.setPremio("Camiseta Oficial");
-        _codigoPromocional = generar_Codigo_Promocional();
-
+        _codigoPromoDisponible = true;
+    }
+      //------------------ Getters y Setters ----------------------
+  
+    public boolean getCodigoPromoDisponible() {
+        return _codigoPromoDisponible;
     }
 
-    void canjearCodigo(){
-
-        canjeoCodigoPromocional = true;
+    public void setCanjeoCodigo() {
+        _codigoPromoDisponible = false;
     }
-
-     //------------------------------------- Chequeo de metodos --------------------------------------------------------- 
-
-     private Integer generar_Codigo_Promocional(){
-
-        return (int) (Math.random() * 100);
-     }
-
-
-        //------------------------------------- Getters y Setters ---------------------------------------------------------
-    
-    
-    public Integer get_codigoPromocional() {
-        return _codigoPromocional;
-    }
-
-    public boolean getCanjeoCodigo() {
-        return canjeoCodigoPromocional;
-    }
-
   
 }

@@ -15,7 +15,6 @@ public class Fabrica {
 	private int lugaresPorPais;
 	private String[] listadoDeMundialesTop10;
 	
-
 	private Map<String, String[]> balonYPaisPorMundialTop10;
 	private Map<String, Integer> ranking;
 
@@ -39,9 +38,7 @@ public class Fabrica {
 	////////////////////////////////////////////////////////////////////////
 
 	Album crearAlbumWeb()  {
-
 		return new AlbumWeb();
-
 	}
 
 	Album crearAlbumExtendido() {
@@ -49,21 +46,23 @@ public class Fabrica {
 	}
 
 	Album crearAlbumTradicional(){
-		int aleatorio = (int) (Math.random() * generarPremiosParaSorteoInstantaneo().length-1) + 0;		
-		return new AlbumTradicional(generarPremiosParaSorteoInstantaneo()[aleatorio]);
+		int num_premio = (int)(random.nextFloat()*3); // elige el premio por azar
+		return new AlbumTradicional(premiosInstantaneos[num_premio]);
+	}
+	
+	public int getLugaresPorPais() {
+		return lugaresPorPais;
 	}
 
 	List<Figurita> generarSobre(int cantFigus) {
 		
-		
-
 		//vamos a generar una serie de figuritas random
 		ArrayList<Figurita> figus = new ArrayList<>();
 		String[] paises = generarPaisesClasificados();
 		
 		for (int i = 0; i < cantFigus; i++) {
 			
-			Integer numerojugador = (int) (Math.random() * 11) + 1;
+			Integer numerojugador = (int) (Math.random() * lugaresPorPais) + 1;
 			String pais = paises[(int)(Math.random() * 32)];
 
 			figus.add(new Figurita("Jugador " + numerojugador,
@@ -72,45 +71,35 @@ public class Fabrica {
 		return figus;
 	}		
 
-	List<Figurita> generarSobreTop10(int cantFigus) {
+	List<Figurita> generarSobreTop10(int cantFigus) { // VER QUILOMBO HECHO ACÁ
 		
 		//vamos a generar una serie de figuritas random TOP 10
 		ArrayList<Figurita> figus = new ArrayList<>();
-		String[] paisesMundialistas = generarListadoDeMundiales();
 		
 		for (int i = 0; i < cantFigus; i++) {
 			
 			// Generamos una posicion al azar del 0 al 2
 			int numerojugador = (int) (Math.random() * 2 + 1);
-			String pais = paisesMundialistas[(int)(Math.random() * 10)]; //Un pais al azar
+			String pais = listadoDeMundialesTop10[(int)(Math.random() * 10)]; //Un pais al azar
 			
 			//Obtenemos el año de ese mundial
 			String anio = String.valueOf(pais.charAt(pais.length() - 2)) + String.valueOf(pais.charAt(pais.length() - 1));
 			//Recortamos el pais de tal forma que podamos sacar el valor base del mismo
 			pais = pais.substring(0, pais.length() - 4);
 			
-
-			if (pais.equals("Corea del Sur y Japón")) { // Corea y japon son una excepcion
-				
-				
+			if (pais.equals("Corea del Sur y Japón")) { // Corea y japon son una excepcion		
 				//Decision de diseño: usamos el valor base de Japon
 				figus.add(new FiguritaTop10("Jugador " + numerojugador,
 				calcularValorBase("Japón", numerojugador), "Japón", numerojugador,anio));	
 			}
-			else{
-				
+			else {	
 				//Si es cualquier otro pais
 				figus.add(new FiguritaTop10("Jugador " + numerojugador,
 				calcularValorBase(pais, numerojugador), pais, numerojugador,anio));	
-
-			}
-					
+			}		
 		}
 		return figus; // Retornamos las figuritas TOP 10
-
-
 	}
-
 
 	///////////////////////////////////////////////////////
 	///////////// METODOS FACILITADOS POR LA CATEDRA //////

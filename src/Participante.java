@@ -10,68 +10,35 @@ public class Participante {
     private Album _album;
 
     protected Fabrica _fb;
-    private List<Figurita> _figuritasAdquiridas;
-    private List<Figurita> _figuritasRepetidas;
+    private List<Figurita> _figusCompradas;
+    private List<Figurita> _figusRepetidas;
 
     private String _tipoAlbum;
 
   
 
     // Constructor de Participante
-    Participante(String nombre, Integer dni, String tipoAlbum) throws RuntimeException {
-
-        if (!checkDni(dni)) { // El dni es invalido lanzo exception
-            throw new RuntimeException("El dni es invalido");
-        }
-
-        if (!check_Tipo_Album(tipoAlbum)) { // Chequea si el tipo de album es valido
-            throw new RuntimeException("El tipo de album no es valido.");
-        }
+    Participante(String nombre, Integer dni, String tipoAlbum) {//throws RuntimeException {
 
         _fb = new Fabrica(); // Objeto de uso general
 
-        _figuritasAdquiridas = new ArrayList<>();
-        _figuritasRepetidas = new ArrayList<>();
+        _figusCompradas = new ArrayList<>();
+        _figusRepetidas = new ArrayList<>();
 
         _nombre = nombre;
         _dni = dni;
 
-        _album = establecerAlbum(tipoAlbum);
+        _album = generarAlbum(tipoAlbum);
         _tipoAlbum = tipoAlbum;
-
     }
 
-    // ------------------------------------- Chequeo de metodos
-    // ---------------------------------------------------------
-    private boolean checkDni(Integer dni) {
+    // ---------------------------- Chequeo de metodos -----------------
 
-        if (String.valueOf(dni) != "") {
-            return true;
-        }
-        return false;
+    private boolean estaComprada(Figurita figu) {	
+    	return _figusCompradas.contains(figu) ? true : false;
     }
 
-    private boolean check_Tipo_Album(String type) {
-
-        return (type.equals("Web") || type.equals("Extendido") ||
-                type.equals("Tradicional")) ? true : false;
-
-    }
-
-    private boolean detectarFigurita(Figurita figu) {
-
-        for (int i = 0; i < _figuritasAdquiridas.size(); i++) {
-        	
-            if (_figuritasAdquiridas.get(i).equals(figu)) {
-                return true;
-            }
-        }
-        return false;
-
-    }
-
-    // ------------------------------------- Metodos de uso general
-    // --------------------------------------------------------
+    // ------------------- Metodos de uso general -----------------------
 
     @Override
     public boolean equals(Object obj) {
@@ -89,7 +56,6 @@ public class Participante {
     // Muestra la informacion completa de este participante
     @Override
     public String toString() {
-
         StringBuilder st = new StringBuilder();
 
         st.append("Nombre: " + _nombre + "\n");
@@ -97,15 +63,12 @@ public class Participante {
         st.append("Completo El album: " + _premioRecibido + "\n");
         st.append("Adquiridas: " + "\n");
 
-        for (Figurita figurita : _figuritasAdquiridas) {
-
+        for (Figurita figurita : _figusCompradas) {
             st.append(figurita.toString() + "\n");
 
         }
         st.append("Repetidas: " + "\n");
-
-        for (Figurita figurita : _figuritasRepetidas) {
-
+        for (Figurita figurita : _figusRepetidas) {
             st.append(figurita.toString() + "\n");
 
         }
@@ -114,38 +77,21 @@ public class Participante {
 
     }
 
-    Album establecerAlbum(String tipo) {
-
-        switch (tipo) {
-
-            case "Web":
-                return _fb.crearAlbumWeb();
-            case "Extendido":
-                return _fb.crearAlbumExtendido();
-            default:
-                return _fb.crearAlbumTradicional();
-
+    Album generarAlbum(String tipo) {
+    	switch (tipo) {
+            case "Web": return _fb.crearAlbumWeb();
+            case "Extendido": return _fb.crearAlbumExtendido();
+            default: return _fb.crearAlbumTradicional();
         }
-
     }
 
     void agregarFiguritas() {
-
         List<Figurita> figus = _fb.generarSobre(4);
 
-        for (int i = 0; i < 4; i++) {
-
-            if (detectarFigurita(figus.get(i))) { // Devuelve true si la figurita ya esta adquirida
-
-                _figuritasRepetidas.add(figus.get(i));
-            }
-
-            else {
-                _figuritasAdquiridas.add(figus.get(i));
-            }
-
+        for (int i=0; i<4; i++) {
+            if (estaComprada(figus.get(i)) ? _figusRepetidas.add(figus.get(i))
+            	: _figusCompradas.add(figus.get(i)));        
         }
-
     }
 
     void agregarFiguritasTOP10() {
@@ -153,38 +99,32 @@ public class Participante {
         List<Figurita> figus = _fb.generarSobreTop10(4);
         for (int i = 0; i < 4; i++) {
 
-            if (detectarFigurita(figus.get(i))) { // Devuelve true si la figurita ya esta adquirida
+            if (estaComprada(figus.get(i))) { // Devuelve true si la figurita ya esta adquirida
 
-                _figuritasRepetidas.add(figus.get(i));
+                _figusRepetidas.add(figus.get(i));
             }
 
             else {
-                _figuritasAdquiridas.add(figus.get(i));
+                _figusCompradas.add(figus.get(i));
             }
-
         }
-
     }
 
     void AgregarFiguritaIndividual(Figurita figu){
-
-        _figuritasAdquiridas.add(figu);
-
-
+        _figusCompradas.add(figu);
     }
 
     ArrayList<Figurita> pegarFiguritas() {
 
         //Por polimorfismo, si el album es extendido se invoca al pegar figuritas de extendido
-        ArrayList<Figurita> figus = _album.pegarFiguritas(_figuritasAdquiridas);
-        _figuritasAdquiridas.clear();
+        ArrayList<Figurita> figus = _album.pegarFiguritas(_figusCompradas);
+        _figusCompradas.clear();
         return figus;
-
     }
 
     boolean poseeFigurita(Figurita fig){
 
-        for (Figurita figurita : _figuritasAdquiridas) {
+        for (Figurita figurita : _figusCompradas) {
             
             if (figurita.equals(fig)) {
                 return true;
@@ -194,16 +134,14 @@ public class Participante {
 
     }
 
-    // ------------------------------------- Getters and Setters
-    // --------------------------------------------------------
+    // ------------------ Getters and Setters -------------------
 
     Integer getDni() {
         return _dni;
     }
 
     Integer get_Codigo_Unico_Album() {
-
-        return _album.codigoAlbum;
+        return _album._codigoAlbum;
     }
 
     String getNombre() {
@@ -211,7 +149,6 @@ public class Participante {
     }
 
     Album getAlbum() {
-
         return _album;
     }
 
@@ -223,45 +160,46 @@ public class Participante {
     public String get_tipoAlbum() {
         return _tipoAlbum;
     }
+    
+    public List<Figurita> getFigusCompradas() {
+    	return _figusCompradas;
+    }
 
     public List<Figurita> get_figuritasRepetidas() {
-        return _figuritasRepetidas;
+        return _figusRepetidas;
     }
 
     Figurita obtenerFiguritaID(Integer codigo){
 
 
-        for (Figurita figurita : _figuritasAdquiridas) {
+        for (Figurita figurita : _figusCompradas) {
             
             if (codigo.compareTo(figurita.getCodigo_ID()) == 0) {
                 return figurita;
             }
 
         }
-
-        throw new RuntimeException("Figurita no encontrada Error");
+        System.out.println("figus compradas: " + _figusCompradas.size());
+        throw new RuntimeException("Figurita no encontrada!");
     }
 
     //Esta funcion se encarga de eliminar una figurita de la lista de adquiridas o repetidas
     void borrarFiguritaID(Integer CodigoFigurita){
 
-       for (int i = 0; i < _figuritasAdquiridas.size(); i++) {
+       for (int i = 0; i < _figusCompradas.size(); i++) {
         
-        if (_figuritasAdquiridas.get(i).getCodigo_ID() == CodigoFigurita) {
+        if (_figusCompradas.get(i).getCodigo_ID() == CodigoFigurita) {
             
-            _figuritasAdquiridas.remove(i);
-        }
-
+            _figusCompradas.remove(i);
+            }
        }
-       for (int i = 0; i < _figuritasRepetidas.size(); i++) {
+       for (int i = 0; i < _figusRepetidas.size(); i++) {
         
-        if (_figuritasRepetidas.get(i).getCodigo_ID() == CodigoFigurita) {
+        if (_figusRepetidas.get(i).getCodigo_ID() == CodigoFigurita) {
             
-            _figuritasRepetidas.remove(i);
-        }
-
+            _figusRepetidas.remove(i);
+            }
        }
-
     }
 
     //Devuelve un listado de todas las secciones

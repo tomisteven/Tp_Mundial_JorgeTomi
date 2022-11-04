@@ -15,17 +15,19 @@ public class CodigoCliente {
 		
 		sistema.comprarFiguritas(222222);
 		// El participante 111111 tiene album Web entonces tiene un codigo 
-		// promocional para solicitar 4 figuritas sin consto.
+		// promocional para solicitar 4 figuritas sin costo.
+//		sistema.comprarFiguritasConCodigoPromocional(222222);
 		sistema.comprarFiguritasConCodigoPromocional(111111);
+//		sistema.comprarFiguritasConCodigoPromocional(111111);
 		sistema.comprarFiguritas(222222);
 		sistema.comprarFiguritas(333333);
 		
-		// El participante 333333 tiene un album tradicional y por eso puede 
+		// El participante 222222 tiene un album tradicional y por eso puede 
 		// participar en un sorteo por un premio instantaneo.
 		System.out.println(
-				sistema.darNombre(333333) + 
+				sistema.darNombre(222222) + 
 				" recibio por sorteo instantaneo: " + 
-				sistema.aplicarSorteoInstantaneo(333333)
+				sistema.aplicarSorteoInstantaneo(222222)
 			);
 		System.out.println();
 		

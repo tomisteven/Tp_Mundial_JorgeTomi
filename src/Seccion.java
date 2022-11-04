@@ -1,54 +1,41 @@
 import java.util.ArrayList;
-import java.util.List;
 
 public class Seccion {
     
-    String pais;
-    private Integer numero_Seccion;
-   
-    private boolean seccion_Completa;
+    String _pais;
+    private Integer _id_seccion;
+    private boolean seccion_completa;
     private ArrayList<Figurita> figusPegadas;
+    private Fabrica fb;
     
 
-    public Seccion(String pais, Integer numero_Seccion) {
+    public Seccion(String pais, Integer id_Seccion) {
         
-        this(pais);
-        this.numero_Seccion = numero_Seccion;
+        _pais = pais;
+        _id_seccion = id_Seccion;
         figusPegadas = new ArrayList<>();
-        seccion_Completa = false;
+        seccion_completa = false;
+        fb = new Fabrica();
     }
 
-    Seccion(String pais){
-
-        this.pais = pais;
+    public Seccion(String pais){
+        _pais = pais;
     }
 
     protected Figurita pegarFiguritaTOP10(Figurita other){
-
-         //Usamos un booleano para detectar si la figurita ya fue pegada
-         boolean ret = true;
+    	if (seccion_completa) return null; // ya no hay nada para pegar aquí;
+    	
+         //Usamos un acumulador booleano para ver si la figurita ya fue pegada
+         boolean ret = false;
          for (Figurita figurita : figusPegadas) {
-             
-             ret = ret && !figurita.equals(other); // mientras false la figurita no esta pegada
-             
-             if (!ret) { 
-             return null; // Devolvemos null si la figurita a pegar ya fue pegada
-             }    
-         }
- 
-         if (figusPegadas.size() != 2) {
-             
-             figusPegadas.add(other);
-         }
- 
-         if (figusPegadas.size() == 2) {
-             seccion_Completa = true;
-         }
- 
- 
-         return other; // Si fue pegada con exito devolvemos las figurita
+        	 ret = ret || figurita.equals(other); // mantiene false si la figurita no esta pegada
+             }
+         if (ret) return null; // Devolvemos null si la figurita a pegar ya fue pegada
+         
+         figusPegadas.add(other);
+         if (figusPegadas.size() == 2) seccion_completa = true;
 
-
+         return other; // devolvemos la figurita pegada
     }
 
     @Override
@@ -63,35 +50,35 @@ public class Seccion {
        return st.toString();
     }
 
-    protected Figurita pegarFiguritas(Figurita other){
+    protected Figurita pegarFiguritas(Figurita figu){
 
         for (Figurita figurita : figusPegadas) {
             
             // Si son iguales devuelvo null inmediatamente
-            if (figurita.equals(other)) { 
+            if (figurita.equals(figu)) { 
                 return null; // la figurita a pegar ya fue pegada
             }    
         }
 
-        if (figusPegadas.size() != 11) {
+        if (figusPegadas.size() != fb.getLugaresPorPais()) {
             
-            figusPegadas.add(other);
+            figusPegadas.add(figu);
         }
 
-        if (figusPegadas.size() == 11) {
-            seccion_Completa = true;
+        if (figusPegadas.size() == fb.getLugaresPorPais()) {
+            seccion_completa = true;
         }
 
 
-        return other; // Si fue pegada con exito devolvemos las figurita
+        return figu; // Si fue pegada con exito devolvemos las figurita
     }
 
     public boolean get_Seccion_Completa() {
-        return seccion_Completa;
+        return seccion_completa;
     }
 
     public Integer getNumero_Seccion() {
-        return numero_Seccion;
+        return _id_seccion;
     }
 
     public ArrayList<Figurita> getFigusPegadas() {
